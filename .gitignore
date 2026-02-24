@@ -1,0 +1,13 @@
+# .gitignore
+
+# Private session notes and conversation files — local only, never push to GitHub
+_private/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
