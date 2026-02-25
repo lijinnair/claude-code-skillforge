@@ -1,6 +1,6 @@
 ---
 name: skillforge
-description: Generates highly optimized Agent Skills for both native Claude Code and the Antigravity system, according to official best practices and the "Progressive Disclosure" strategy. Use when the user wants to build a new skill, turn a workflow into a skill, optimize an existing prompt, or structure agent instructions for either ecosystem.
+description: Generates highly optimized Agent Skills for both native Claude Code and the Antigravity system, according to official best practices and the "Progressive Disclosure" strategy. Use when the user wants to build a new skill, turn a workflow into a skill, upgrade an existing skill to latest best practices, audit a skill for compliance, or structure agent instructions for either ecosystem.
 argument-hint: [skill-idea or workflow]
 ---
 
@@ -12,7 +12,7 @@ argument-hint: [skill-idea or workflow]
 - Only pause at steps marked **(CHECKPOINT)**.
 
 ## Step 0: Update Check
-Fetch `https://raw.githubusercontent.com/lijinnair/skillforge/main/VERSION` silently. Compare the remote version with the local version (`5.7.0`). If remote is newer, display: *"Skillforge v[remote] is available (you have v[local]). Run `git -C [skill-path] pull` to update."* where `[skill-path]` is the detected install location. Then proceed normally — do not block execution.
+Fetch `https://raw.githubusercontent.com/lijinnair/skillforge/main/VERSION` silently. Compare the remote version with the local version (`5.8.0`). If remote is newer, display: *"Skillforge v[remote] is available (you have v[local]). Run `git -C [skill-path] pull` to update."* where `[skill-path]` is the detected install location. Then proceed normally — do not block execution.
 
 ## Step 1: Sync Live Best Practices (CHECKPOINT)
 Fetch live documentation before any user interaction.
@@ -25,6 +25,13 @@ Fetch live documentation before any user interaction.
    - `https://antigravity.google/docs/skills`
 2. **All succeed:** Synthesize best practices, present summary. Say: *"Here are the latest best practices. Proceed?"* Wait for confirmation.
 3. **Any fail:** State which URLs failed. Display cached knowledge version and date. Say: *"I can proceed using built-in knowledge (Version: [X], Last Updated: [Date]). Continue or retry?"* Do not proceed until the user chooses.
+
+## Step 1.5: Mode Detection
+Determine the user's intent:
+- **Build Mode** — User provides a new skill idea, workflow, or says "build", "create", "new". → Proceed to Step 2.
+- **Upgrade Mode** — User provides an existing SKILL.md, pastes skill content, or says "upgrade", "audit", "fix", "optimize", "review". → Proceed to Step U1.
+
+If ambiguous, ask: *"Are you building a new skill or upgrading an existing one?"*
 
 ## Step 2: Intake & Scoping
 Collect from the user:
@@ -137,3 +144,32 @@ After delivering the skill, recommend the user:
 **Deliver:** Sync status → checklist results → `mkdir` command → full `SKILL.md` code block → post-delivery testing recommendations.
 
 Consult `examples/` for reference outputs and `evaluations/` for test prompt templates.
+
+## Upgrade Path
+
+### Step U1: Ingest Existing Skill
+Read the provided SKILL.md. Parse front matter fields and body sections. Identify the target ecosystem (Claude Code or Antigravity) from the file path or content.
+
+### Step U2: Diagnostic Audit (CHECKPOINT)
+Run the full 27-item validation checklist (from Step 6) against the existing skill. For each item, report:
+- Pass — Meets current best practices
+- Warning — Works but could be improved
+- Fail — Violates current best practices
+
+Present the diagnostic report. Say: *"Here's the audit. Shall I upgrade this skill?"* Wait for confirmation.
+
+### Step U3: Upgrade & Fix
+Apply all fixes:
+- Rewrite non-standard front matter to use only recognized fields.
+- Restructure body into imperative steps if needed.
+- Apply relevant authoring patterns from Step 4.
+- Enforce progressive disclosure (move embedded data to references).
+- Fix naming conventions, description format, and invocation flags.
+
+Preserve the skill's original intent and domain logic — only change structure and compliance.
+
+### Step U4: Deliver Upgraded Skill
+Output:
+1. **Change summary** — Bulleted list of what was fixed and why.
+2. **Upgraded `SKILL.md`** — Full code block ready to replace the original.
+3. **Post-upgrade recommendations** — Same as Step 6 post-delivery.

@@ -4,10 +4,10 @@
 
 ### The skill that builds skills.
 
-Generate perfectly structured Claude Code &amp; Antigravity `SKILL.md` files — with live best practices sync, 10-marketplace discovery, and self-validation — in minutes.
+Generate and upgrade Claude Code &amp; Antigravity `SKILL.md` files — with live best practices sync, 10-marketplace discovery, built-in skill upgrader, and self-validation — in minutes.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-5.7.0-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-5.8.0-green.svg)](CHANGELOG.md)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-compatible-blueviolet.svg)](https://code.claude.com)
 [![Antigravity](https://img.shields.io/badge/Antigravity-compatible-orange.svg)](https://antigravity.google)
 
@@ -27,13 +27,13 @@ git clone https://github.com/lijinnair/skillforge ~/.gemini/antigravity/skills/s
 git clone https://github.com/lijinnair/skillforge ~/.claude/skills/skillforge
 ```
 
-Then just say: **"I want to build a new skill"** or run **`/skillforge`**
+Then say: **"I want to build a new skill"** or **"Upgrade this skill"** or run **`/skillforge`**
 
 ---
 
 ## What It Does
 
-Skillforge is a meta-skill — an AI agent that builds other AI agents. Give it a raw idea or messy workflow, and it outputs a deploy-ready `SKILL.md` file that follows every official best practice.
+Skillforge is a meta-skill — an AI agent that builds and upgrades other AI agents. Give it a raw idea, messy workflow, or an existing skill to upgrade, and it outputs a deploy-ready `SKILL.md` file that follows every official best practice.
 
 **The pipeline:**
 
@@ -61,19 +61,20 @@ The result: skills that are faster, more reliable, and cheaper to run.
 
 - **Dual ecosystem** — Generates skills for Claude Code or Antigravity
 - **Live best practices sync** — Always builds against the latest official spec
+- **Skill upgrader** — Feed it any existing SKILL.md and get a diagnostic audit + automated upgrade to latest best practices
 - **10-source discovery** — Searches Smithery, SkillsMP, SkillsLLM, SkillHub, Composio, AI Templates, GitHub Topics, Awesome Claude Skills, and more before building from scratch
 - **Graceful fallback** — If docs are unreachable, surfaces cached version and asks before proceeding
 - **Self-validating** — 27-item, 3-section checklist (Core quality, Code & scripts, Post-delivery) catches errors before you see the output
 - **Pattern library** — Teaches 8 authoring patterns: degrees of freedom, feedback loops, templates, examples, conditional workflows, checklists, verifiable intermediates, defaults over options
 - **Evaluation-ready** — Ships with 3 evaluation scenarios for testing generated skills
-- **Token-optimized** — The skill itself practices what it preaches (< 150 lines, ~1,400 tokens)
+- **Token-optimized** — The skill itself practices what it preaches (< 200 lines, ~1,600 tokens)
 - **Self-updating** — Checks for newer versions on GitHub before every run, with a one-line update notice
 
 ## Repository Structure
 
 ```
 skillforge/
-├── SKILL.md            ← The core SOP (v5.7.0)
+├── SKILL.md            ← The core SOP (v5.8.0)
 ├── VERSION             ← Current version string (used by self-update)
 ├── README.md           ← You are here
 ├── CHANGELOG.md        ← Full version history

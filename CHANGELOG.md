@@ -5,6 +5,17 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
 ---
 
+## [5.8.0] — 2026-02-26
+### Added
+- **Skill Upgrader (Upgrade Mode)** — Skillforge now supports a second mode: feed it any existing SKILL.md and it runs a full 27-item diagnostic audit, reports Pass/Warning/Fail per item, then auto-upgrades the skill to latest best practices while preserving original intent and domain logic.
+- **Step 1.5: Mode Detection** — After syncing best practices, Skillforge now detects whether the user wants to build a new skill or upgrade an existing one, and branches accordingly.
+- **Upgrade Path (Steps U1–U4)** — Four-step upgrade pipeline: Ingest → Diagnostic Audit (with checkpoint) → Upgrade & Fix → Deliver with change summary.
+
+### Changed
+- **Front matter description** — Updated to include upgrade-related triggers ("upgrade an existing skill", "audit a skill for compliance").
+
+---
+
 ## [5.7.0] — 2026-02-26
 ### Added
 - **New discovery source in Step 2.5** — Added [Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) (37K GitHub stars), expanding from 9 to 10 marketplace sources searched in parallel.
