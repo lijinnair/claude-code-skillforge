@@ -12,7 +12,7 @@ argument-hint: [skill-idea or workflow]
 - Only pause at steps marked **(CHECKPOINT)**.
 
 ## Step 0: Update Check
-Fetch `https://raw.githubusercontent.com/lijinnair/skillforge/main/VERSION` silently. Compare the remote version with the local version (`5.8.0`). If remote is newer, display: *"Skillforge v[remote] is available (you have v[local]). Run `git -C [skill-path] pull` to update."* where `[skill-path]` is the detected install location. Then proceed normally — do not block execution.
+Fetch `https://raw.githubusercontent.com/lijinnair/skillforge/main/VERSION` silently. Compare the remote version with the local version (`5.9.0`). If remote is newer, display: *"Skillforge v[remote] is available (you have v[local]). Run `git -C [skill-path] pull` to update."* where `[skill-path]` is the detected install location. Then proceed normally — do not block execution.
 
 ## Step 1: Sync Live Best Practices (CHECKPOINT)
 Fetch live documentation before any user interaction.
@@ -30,8 +30,9 @@ Fetch live documentation before any user interaction.
 Determine the user's intent:
 - **Build Mode** — User provides a new skill idea, workflow, or says "build", "create", "new". → Proceed to Step 2.
 - **Upgrade Mode** — User provides an existing SKILL.md, pastes skill content, or says "upgrade", "audit", "fix", "optimize", "review". → Proceed to Step U1.
+- **Scan Mode** — User says "scan", "check my skills", "health check", "audit my skills". → Proceed to Step S1.
 
-If ambiguous, ask: *"Are you building a new skill or upgrading an existing one?"*
+If ambiguous, ask: *"Are you building a new skill, upgrading an existing one, or scanning your installed skills?"*
 
 ## Step 2: Intake & Scoping
 Collect from the user:
@@ -143,6 +144,8 @@ After delivering the skill, recommend the user:
 
 **Deliver:** Sync status → checklist results → `mkdir` command → full `SKILL.md` code block → post-delivery testing recommendations.
 
+Then say: *"Tip: Have other skills? Say 'Upgrade this skill' with any SKILL.md, or 'Scan my skills' for a full health check."*
+
 Consult `examples/` for reference outputs and `evaluations/` for test prompt templates.
 
 ## Upgrade Path
@@ -173,3 +176,31 @@ Output:
 1. **Change summary** — Bulleted list of what was fixed and why.
 2. **Upgraded `SKILL.md`** — Full code block ready to replace the original.
 3. **Post-upgrade recommendations** — Same as Step 6 post-delivery.
+
+Then say: *"Tip: Want to check your other skills? Say 'Scan my skills' for a full health report."*
+
+## Scan Path
+
+### Step S1: Discover Skills
+Scan the user's skill directories:
+- Claude Code: `~/.claude/skills/*/SKILL.md`
+- Antigravity: `~/.gemini/antigravity/skills/*/SKILL.md`
+
+If both directories exist, scan both. List all discovered skills. If no skills found, say: *"No skills found in the default directories. Provide a path to scan."*
+
+### Step S2: Quick Audit
+For each discovered skill, run these key checks:
+- Front matter present and < 1024 characters
+- Only standard front matter fields used
+- Name passes constraints (≤64 chars, lowercase+hyphens)
+- Description starts with 3rd-person verb
+- Body < 500 lines
+- Steps begin with imperative verbs
+
+### Step S3: Health Report
+Output a summary table:
+
+| Skill | Ecosystem | Checks Passed | Issues | Top Issue |
+|---|---|---|---|---|
+
+Sort by most issues first. Then say: *"Run 'Upgrade [skill-name]' on any skill to fix its issues."*

@@ -5,6 +5,14 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
 ---
 
+## [5.9.0] — 2026-02-26
+### Added
+- **Skill Scanner (Scan Mode)** — Say "Scan my skills" and Skillforge reads all SKILL.md files in `~/.claude/skills/` and `~/.gemini/antigravity/skills/`, runs a quick audit on each, and outputs a health report table sorted by most issues first.
+- **Scan Path (Steps S1–S3)** — Three-step scan pipeline: Discover Skills → Quick Audit → Health Report with actionable next steps.
+- **Post-delivery nudge** — After every Build or Upgrade delivery, Skillforge now suggests scanning or upgrading other installed skills.
+
+---
+
 ## [5.8.0] — 2026-02-26
 ### Added
 - **Skill Upgrader (Upgrade Mode)** — Skillforge now supports a second mode: feed it any existing SKILL.md and it runs a full 27-item diagnostic audit, reports Pass/Warning/Fail per item, then auto-upgrades the skill to latest best practices while preserving original intent and domain logic.
