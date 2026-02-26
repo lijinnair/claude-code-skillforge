@@ -33,7 +33,7 @@ Then say: **"Build a new skill"**, **"Upgrade this skill"**, or **"Scan my skill
 
 ## What It Does
 
-Skillforge is a meta-skill that builds, upgrades, and scans AI skills. Give it a raw idea, messy workflow, or an existing skill to upgrade, and it outputs a deploy-ready `SKILL.md` file that follows every official best practice.
+Skillforge is a meta-skill that builds, upgrades, and scans Claude Code and Antigravity skills. Give it a raw idea, messy workflow, or an existing skill to upgrade, and it outputs a deploy-ready `SKILL.md` file that follows every official best practice.
 
 **The pipeline:**
 
@@ -48,7 +48,7 @@ Skillforge is a meta-skill that builds, upgrades, and scans AI skills. Give it a
 
 ## Why It Exists
 
-Most AI skills are written like essays. Skillforge enforces **Progressive Disclosure** — the principle that every token in the context window must earn its place:
+Most Claude Code and Antigravity skills are written like essays. Skillforge enforces **Progressive Disclosure** — the principle that every token in the context window must earn its place:
 
 - Minimal footprint in the context window
 - Deterministic logic offloaded to `scripts/`
