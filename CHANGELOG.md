@@ -5,6 +5,24 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
 ---
 
+## [5.11.0] — 2026-03-10
+### Fixed
+- **Removed fabricated name constraints** — "no reserved words ('anthropic', 'claude')" and "no XML tags in name/description" were never in the Claude Code spec. Removed from Step 2, Step 3, and the 27-item validation checklist.
+- **Corrected `name` and `description` field requirements** — Both are optional per the live spec (`name` defaults to directory name, `description` defaults to first paragraph). Skillforge was incorrectly treating them as mandatory.
+- **Removed per-field description character limit** — The "Max 1024 chars" limit on `description` was a misattribution; the spec has no stated per-field limit.
+- **Removed "Front matter < 1024 chars" checklist item** — Not a stated spec constraint.
+
+### Added
+- **`${CLAUDE_SKILL_DIR}` substitution** — Taught in Step 4, checked in Step 6 checklist and Scan S2 audit. Essential for referencing bundled scripts portably.
+- **`${CLAUDE_SESSION_ID}` substitution** — Taught in Step 4.
+- **`$ARGUMENTS[N]` / `$N` indexed arguments** — Taught in Step 4 for multi-argument skills.
+- **`agent:` frontmatter field** — Full explanation in Step 3 with valid values (`Explore`, `Plan`, `general-purpose`, custom agents). Checked in Step 6 checklist.
+- **Project-level skills** — Step 2 now asks Personal vs Project scope. Step 5 outputs the correct `.claude/skills/` path with git commit guidance for team sharing.
+- **Priority system** — Step 5 documents enterprise > personal > project override order and plugin namespace isolation.
+- **U3 Upgrade** — Now explicitly removes fabricated constraints when upgrading existing skills built with older versions of Skillforge.
+
+---
+
 ## [5.10.0] — 2026-02-26
 ### Added
 - **Sample Upgrade Report** — New example (`examples/sample-upgrade-report.md`) showing the diagnostic audit output format with Pass/Warning/Fail items and change summary.

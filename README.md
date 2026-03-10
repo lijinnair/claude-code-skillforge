@@ -7,7 +7,7 @@
 Generate and upgrade Claude Code &amp; Antigravity `SKILL.md` files — with live best practices sync, 10-marketplace discovery, built-in skill upgrader, and self-validation — in minutes.
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-5.10.0-green.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-5.11.0-green.svg)](CHANGELOG.md)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-compatible-blueviolet.svg)](https://code.claude.com)
 [![Antigravity](https://img.shields.io/badge/Antigravity-compatible-orange.svg)](https://antigravity.google)
 
@@ -290,7 +290,7 @@ The result: skills that are faster, more reliable, and cheaper to run.
 
 ```
 claude-code-skillforge/
-├── SKILL.md            ← The core SOP (v5.10.0)
+├── SKILL.md            ← The core SOP (v5.11.0)
 ├── VERSION             ← Current version string (used by self-update)
 ├── README.md           ← You are here
 ├── CHANGELOG.md        ← Full version history

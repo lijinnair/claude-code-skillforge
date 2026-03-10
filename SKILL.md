@@ -12,7 +12,7 @@ argument-hint: [skill-idea or workflow]
 - Only pause at steps marked **(CHECKPOINT)**.
 
 ## Step 0: Update Check
-Fetch `https://raw.githubusercontent.com/lijinnair/claude-code-skillforge/main/VERSION` silently. Compare the remote version with the local version (`5.10.0`). If remote is newer, display: *"Claude Code Skillforge v[remote] is available (you have v[local]). Run `git -C [skill-path] pull` to update."* where `[skill-path]` is the detected install location. Then proceed normally — do not block execution.
+Fetch `https://raw.githubusercontent.com/lijinnair/claude-code-skillforge/main/VERSION` silently. Compare the remote version with the local version (`5.11.0`). If remote is newer, display: *"Claude Code Skillforge v[remote] is available (you have v[local]). Run `git -C [skill-path] pull` to update."* where `[skill-path]` is the detected install location. Then proceed normally — do not block execution.
 
 ## Step 1: Sync Live Best Practices (CHECKPOINT)
 Fetch live documentation before any user interaction.
@@ -36,13 +36,13 @@ If ambiguous, ask: *"Are you building a new skill, upgrading an existing one, or
 
 ## Step 2: Intake & Scoping
 Collect from the user:
-- **Name:** kebab-case, preferring gerund form (e.g., `analyzing-seo-pages`, `formatting-commits`). Noun form acceptable if gerund is awkward. **Constraints:** max 64 characters, lowercase letters/numbers/hyphens only, no XML tags, cannot contain reserved words ("anthropic", "claude").
+- **Name:** kebab-case, preferring gerund form (e.g., `analyzing-seo-pages`, `formatting-commits`). Noun form acceptable if gerund is awkward. **Constraints:** max 64 characters, lowercase letters/numbers/hyphens only. If omitted, Claude uses the directory name.
 - **Category:** `dev` | `marketing` | `seo` | `document` | `data` | `ops`
-- **Ecosystem:** Claude Code (`~/.claude/skills`) or Antigravity (`~/.gemini/antigravity/skills`)
+- **Scope:** Personal (`~/.claude/skills/`) for all projects, or Project (`.claude/skills/`) for this repo only — project skills can be committed to version control for team sharing. Antigravity: `~/.gemini/antigravity/skills/`.
 - **Triggers:** Activation words or phrases
 - **Inputs:** Context, files, or arguments needed at runtime
 - **Output:** Expected deliverable
-- **Tools:** Bash, URL fetch, file read, MCP servers (use `ServerName:tool_name` format), or `context: fork`?
+- **Tools:** Bash, URL fetch, file read, MCP servers (use `ServerName:tool_name` format), or `context: fork` + `agent:`?
 
 ## Step 2.5: Discovery Check
 Search **ALL 10 sources in parallel** before building from scratch:
@@ -64,17 +64,23 @@ Search **ALL 10 sources in parallel** before building from scratch:
 - **Sources failed:** Note unreachable sources in the report. Use whatever succeeded. If ALL 10 fail, proceed to Step 3.
 
 ## Step 3: Front Matter Engineering
-Design front matter (`< 1024 chars`) using ONLY officially recognized fields: `name`, `description`, `disable-model-invocation`, `user-invocable`, `allowed-tools`, `model`, `context`, `agent`, `argument-hint`, `hooks`. Do NOT add custom fields like `license`, `metadata`, `category`, `version`, or `generated-by`.
-- **Name:** Must pass all constraints from Step 2 (≤64 chars, lowercase+hyphens, no XML tags, no reserved words).
-- **Description:** Start with 3rd-person verb ("Analyzes...", "Generates..."). Include both what the skill does AND when to use it, with 3–5 trigger phrases. Max 1024 chars. No XML tags.
-- **Invocation:** `disable-model-invocation: true` for destructive actions. `user-invocable: true` for explicit-only. Omit both for auto-discover.
+Use ONLY officially recognized fields: `name`, `description`, `disable-model-invocation`, `user-invocable`, `allowed-tools`, `model`, `context`, `agent`, `argument-hint`, `hooks`. Do NOT add custom fields like `license`, `metadata`, `category`, `version`, or `generated-by`. All fields are optional; only `description` is recommended.
+- **Name** *(optional — defaults to directory name):* ≤64 chars, lowercase letters/numbers/hyphens only.
+- **Description** *(recommended — defaults to first paragraph if omitted):* Start with 3rd-person verb ("Analyzes...", "Generates..."). Include what the skill does AND when to use it with 3–5 trigger phrases. Keep concise.
+- **Invocation:** `disable-model-invocation: true` for workflows with side effects you control (deploy, commit, send). `user-invocable: false` for background knowledge users shouldn't invoke directly. Omit both for auto-discover.
 - **Argument hint:** Add `argument-hint: [hint]` if the skill accepts arguments (e.g., `argument-hint: [url]`).
-- **Advanced:** Add `context: fork` and `allowed-tools` only if required.
+- **Subagent execution:** Add `context: fork` to run in an isolated subagent. Add `agent: [type]` to specify which subagent runs (`Explore`, `Plan`, `general-purpose`, or any custom agent from `.claude/agents/`). Omit `agent:` to default to `general-purpose`.
+- **Tool restriction:** Add `allowed-tools` to limit which tools Claude can use without per-use approval when the skill is active.
 
 ## Step 4: SOP Translation
 Convert the workflow into numbered imperative steps.
 - Each step starts with a command verb ("Extract...", "Analyze...", "Compile...").
-- Use `$ARGUMENTS` and backtick substitution (e.g., `!\`gh pr diff\``) for runtime context.
+- **Runtime substitutions** available in skill content:
+  - `$ARGUMENTS` — all arguments passed when invoking the skill
+  - `$ARGUMENTS[N]` or `$N` — access argument by 0-based index (e.g., `$0`, `$1`)
+  - `${CLAUDE_SKILL_DIR}` — absolute path to the skill's directory; use this to reference bundled scripts portably regardless of cwd (e.g., `python ${CLAUDE_SKILL_DIR}/scripts/run.py`)
+  - `${CLAUDE_SESSION_ID}` — current session ID; useful for session-specific logs or files
+  - `` !`command` `` — shell command whose output is injected into the skill before Claude sees it (e.g., `` !`gh pr diff` ``)
 
 **Authoring patterns** — apply where appropriate:
 - **Degrees of freedom:** Match specificity to task fragility. High freedom → text instructions. Medium → pseudocode. Low → exact scripts.
@@ -90,9 +96,12 @@ Convert the workflow into numbered imperative steps.
 - **No time-sensitive info:** Do not include information that will become outdated.
 
 ## Step 5: Scaffold Generation
-Output the `mkdir` command for the chosen ecosystem:
-- Claude: `mkdir -p ~/.claude/skills/[skill-name]`
+Output the `mkdir` command for the chosen scope:
+- Personal (Claude): `mkdir -p ~/.claude/skills/[skill-name]`
+- Project (Claude): `mkdir -p .claude/skills/[skill-name]` *(commit to git for team sharing)*
 - Antigravity: `mkdir -p ~/.gemini/antigravity/skills/[skill-name]`
+
+**Priority when names conflict:** enterprise > personal > project. Plugin skills use `plugin-name:skill-name` namespace and cannot conflict with other scopes.
 
 **Scripts** (if applicable):
 - Offload deterministic logic to `scripts/`. Scripts must handle errors explicitly — do not punt errors to Claude. Document all configuration constants with justification (no "voodoo constants").
@@ -109,16 +118,16 @@ Follow with the complete `SKILL.md` code block.
 Run this checklist internally — fix any failures before delivering output.
 
 ### Core quality
-- [ ] Front matter < 1024 characters
-- [ ] Only standard front matter fields used
-- [ ] Name passes all constraints (≤64 chars, lowercase+hyphens, no XML, no reserved words)
-- [ ] No XML tags in description
+- [ ] Only standard front matter fields used (no `license`, `metadata`, `category`, `version`, `generated-by`)
+- [ ] Name ≤64 chars, lowercase+hyphens only (if provided)
 - [ ] Body < 500 lines
-- [ ] Description starts with 3rd-person verb
-- [ ] Description has 3+ trigger phrases and includes "Use when..."
-- [ ] Invocation flags set correctly
+- [ ] Description starts with 3rd-person verb (if provided)
+- [ ] Description has 3+ trigger phrases and includes "Use when..." (if provided)
+- [ ] Invocation flags set correctly (`disable-model-invocation` / `user-invocable`)
+- [ ] `agent:` field set when `context: fork` is used (if needed)
 - [ ] All steps begin with imperative verb
-- [ ] Correct `mkdir` path for chosen ecosystem
+- [ ] Correct `mkdir` path for chosen scope (personal / project / Antigravity)
+- [ ] `${CLAUDE_SKILL_DIR}` used for any bundled script references
 - [ ] No time-sensitive information
 - [ ] Consistent terminology throughout
 - [ ] Examples are concrete, not abstract
@@ -164,10 +173,12 @@ Present the diagnostic report. Say: *"Here's the audit. Shall I upgrade this ski
 ### Step U3: Upgrade & Fix
 Apply all fixes:
 - Rewrite non-standard front matter to use only recognized fields.
+- Remove fabricated constraints (e.g., "no reserved words", "no XML tags" in names/descriptions — these are not in the spec).
 - Restructure body into imperative steps if needed.
 - Apply relevant authoring patterns from Step 4.
 - Enforce progressive disclosure (move embedded data to references).
 - Fix naming conventions, description format, and invocation flags.
+- Replace hardcoded script paths with `${CLAUDE_SKILL_DIR}/scripts/...`.
 
 Preserve the skill's original intent and domain logic — only change structure and compliance.
 
@@ -183,19 +194,20 @@ Then say: *"Tip: Want to check your other skills? Say 'Scan my skills' for a ful
 
 ### Step S1: Discover Skills
 Scan the user's skill directories:
-- Claude Code: `~/.claude/skills/*/SKILL.md`
+- Claude Code personal: `~/.claude/skills/*/SKILL.md`
+- Claude Code project: `.claude/skills/*/SKILL.md` *(current working directory)*
 - Antigravity: `~/.gemini/antigravity/skills/*/SKILL.md`
 
 If both directories exist, scan both. List all discovered skills. If no skills found, say: *"No skills found in the default directories. Provide a path to scan."*
 
 ### Step S2: Quick Audit
 For each discovered skill, run these key checks:
-- Front matter present and < 1024 characters
 - Only standard front matter fields used
-- Name passes constraints (≤64 chars, lowercase+hyphens)
-- Description starts with 3rd-person verb
+- Name ≤64 chars, lowercase+hyphens only (if provided)
+- Description starts with 3rd-person verb (if provided)
 - Body < 500 lines
 - Steps begin with imperative verbs
+- `${CLAUDE_SKILL_DIR}` used for any bundled script references (not hardcoded paths)
 
 ### Step S3: Health Report
 Output a summary table:
